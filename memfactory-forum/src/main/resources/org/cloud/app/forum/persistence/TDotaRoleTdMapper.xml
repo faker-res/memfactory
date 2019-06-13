@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.cloud.app.forum.persistence.TDotaRoleTdMapper" >
+  <resultMap id="BaseResultMap" type="org.cloud.app.forum.bean.TDotaRoleTd" >
+    <id column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    role_id, role_name, create_time, update_time, create_user, update_user
+  </sql>
+  
+  <!-- 获取系统所有角色 -->
+  <select id="getAllRoles" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_dota_role_td;
+  </select>
+  
+  <!--查询角色列表分页数据  -->
+  <select id="getRoleListData" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_dota_role_td
+    <if test="roleName != null">
+    where role_name=#{roleName}
+    </if>
+    order by role_id limit #{rowIndex},#{PageSize}
+  </select>
+  
+  <!--查询角色列表记录总数  -->
+  <select id="getRoleListCnt" resultType="java.lang.Integer">
+    select count(*)
+    from t_dota_role_td
+    <if test="roleName != null">
+    where role_name=#{roleName}
+    </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dota_role_td
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </select>
+ 
+  <insert id="insertSelective" parameterType="org.cloud.app.forum.bean.TDotaRoleTd" >
+    <selectKey resultType="java.lang.Integer" keyProperty="roleId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_dota_role_td
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.app.forum.bean.TDotaRoleTd" >
+    update t_dota_role_td
+    <set >
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </update>
+</mapper>

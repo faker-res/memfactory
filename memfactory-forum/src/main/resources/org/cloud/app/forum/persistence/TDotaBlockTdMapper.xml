@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.cloud.app.forum.persistence.TDotaBlockTdMapper" >
+  <resultMap id="BaseResultMap" type="org.cloud.app.forum.bean.TDotaBlockTd" >
+    <id column="block_id" property="blockId" jdbcType="INTEGER" />
+    <result column="block_name" property="blockName" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    block_id, block_name, order_num, create_time, update_time, create_user, update_user
+  </sql>
+  
+  <!-- 获取系统所有版块 -->
+  <select id="getAllBlocks" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_dota_block_td;
+  </select>
+  
+    <!-- 查询版块列表分页数据 -->
+  <select id="getBlockListData" resultMap="BaseResultMap">
+	  select <include refid="Base_Column_List" />
+	  from t_dota_block_td
+	  <if test="blockName != null">
+	  where block_name=#{blockName}
+	  </if>
+	  order by block_id limit #{rowIndex},#{pageSize};
+  </select>
+  
+  <!-- 查询版块列表记录总数 -->
+  <select id="getBlockListCnt" resultType="java.lang.Integer">
+      select count(*)
+	  from t_dota_block_td
+	  <if test="blockName != null">
+	  where block_name=#{blockName}
+	  </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dota_block_td
+    where block_id = #{blockId,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertSelective" parameterType="org.cloud.app.forum.bean.TDotaBlockTd" >
+    <selectKey resultType="java.lang.Integer" keyProperty="blockId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_dota_block_td
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="blockName != null" >
+        block_name,
+      </if>
+      <if test="orderNum != null" >
+        order_num,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="blockName != null" >
+        #{blockName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.app.forum.bean.TDotaBlockTd" >
+    update t_dota_block_td
+    <set >
+      <if test="blockName != null" >
+        block_name = #{blockName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where block_id = #{blockId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

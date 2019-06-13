@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.memfactory.article.mapper.MfArticleEssayMapper" >
+
+  <resultMap id="BaseResultMap" type="com.memfactory.article.domain.MfArticleEssay" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="column_id" property="columnId" jdbcType="BIGINT" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="source_url" property="sourceUrl" jdbcType="VARCHAR" />
+    <result column="create_user_id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+    <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR" />
+    <result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="comment_cnt" property="commentCnt" jdbcType="BIGINT"/>
+  </resultMap>
+  
+  <resultMap id="ResultMapWithBLOBs" type="com.memfactory.article.domain.MfArticleEssay" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+  <!-- 获取最新或者最热的文章 -->
+  <select id="getIndexMfArticleEssays" resultMap="ResultMapWithBLOBs">
+     select <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />   
+     from mf_article_essay
+     <if test="sorts != null and sorts.size() > 0 ">
+	      order by
+	      <foreach collection="sorts" item="item" index="index" separator=",">
+	          #{item.sortField}  #{item.sortMode}
+	      </foreach>
+     </if>
+     limit #{limit}
+  </select>
+  
+  <!-- 获取文章列表数据 -->
+  <select id="getMfArticleEssayListData" resultMap="ResultMapWithBLOBs">
+    select <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />   
+    from mf_article_essay 
+    <if test="columnId != null">
+        where column_id=#{columnId} 
+    </if>
+    order by create_time desc limit #{rowIndex},#{pageSize};
+  </select>
+  
+  <!-- 获取文章列表总数 -->
+   <select id="getMfArticleEssayListCnt" resultType="java.lang.Integer">
+    select count(*)   
+    from mf_article_essay 
+    <if test="columnId != null">
+        where column_id=#{columnId} 
+    </if>
+  </select>
+  
+  <sql id="Base_Column_List" >
+    id, title, pic_url, column_id, source, source_url, create_user_id, create_user_name, 
+    update_user_id, update_user_name, create_time, update_time, flag,comment_cnt
+  </sql>
+  
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mf_article_essay
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <insert id="insertSelective" parameterType="com.memfactory.article.domain.MfArticleEssay" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into mf_article_essay
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="columnId != null" >
+        column_id,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="sourceUrl != null" >
+        source_url,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="createUserName != null" >
+        create_user_name,
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id,
+      </if>
+      <if test="updateUserName != null" >
+        update_user_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="columnId != null" >
+        #{columnId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceUrl != null" >
+        #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserName != null" >
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null" >
+        #{updateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserName != null" >
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.memfactory.article.domain.MfArticleEssay" >
+    update mf_article_essay
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="columnId != null" >
+        column_id = #{columnId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceUrl != null" >
+        source_url = #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserName != null" >
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id = #{updateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserName != null" >
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="commentCnt != null">
+        comment_cnt=#{commentCnt},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+ 
+</mapper>

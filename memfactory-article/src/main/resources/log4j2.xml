@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" fileName="../logs/article.log" filePattern="../logs/$${date:yyyy-MM}/article-%d{MM-dd}-%i.log">
+			<PatternLayout>
+				<Pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %5p [%t] (%l) - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+	</appenders>
+
+	<loggers>
+		<logger name="org.springframework" level="info" />
+		<logger name="com.memfactory.article" level="debug" />
+		<logger name="com.ineunet" level="debug" />
+		<logger name="java.sql" level="warn" />
+		<logger name="org.apache" level="error" />
+		<logger name="org.jasig" level="info" />
+		<root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</root>
+	</loggers>
+	
+</configuration>
